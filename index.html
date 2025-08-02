@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Learning for Sr. KG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Balsamiq+Sans:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* Light blue background */
+        }
+        .font-balsamiq {
+            font-family: 'Balsamiq Sans', cursive;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #2563eb; /* Blue-600 */
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer;
+            border-radius: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            user-select: none;
+        }
+        .card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .card:active {
+            transform: scale(1.02);
+        }
+        /* Gradient colors for cards */
+        .card-blue { background-image: linear-gradient(to top right, #60a5fa, #3b82f6); }
+        .card-green { background-image: linear-gradient(to top right, #4ade80, #22c55e); }
+        .card-yellow { background-image: linear-gradient(to top right, #facc15, #eab308); }
+        .card-red { background-image: linear-gradient(to top right, #f87171, #ef4444); }
+        .card-purple { background-image: linear-gradient(to top right, #c084fc, #a855f7); }
+        
+        /* Test Section Styles */
+        .answer-btn {
+            transition: all 0.2s ease;
+        }
+        .answer-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: #3b82f6; /* Blue-500 */
+            color: white;
+        }
+        .answer-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .feedback {
+            font-size: 1.5rem;
+            font-weight: bold;
+            height: 40px;
+        }
+        .feedback.correct { color: #22c55e; } /* Green-500 */
+        .feedback.wrong { color: #ef4444; } /* Red-500 */
+    </style>
+</head>
+<body class="antialiased text-slate-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-balsamiq text-blue-700">Let's Learn Together!</h1>
+            <p class="text-lg text-slate-600 mt-2">Click on a number or letter to hear it!</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap justify-center space-x-2 sm:space-x-4 mb-8">
+            <button id="btn-numbers" class="tab-button active font-bold py-3 px-6 sm:px-8 rounded-full bg-white shadow-md mb-2">Numbers</button>
+            <button id="btn-alphabets" class="tab-button font-bold py-3 px-6 sm:px-8 rounded-full bg-white shadow-md mb-2">Alphabets</button>
+            <button id="btn-test" class="tab-button font-bold py-3 px-6 sm:px-8 rounded-full bg-white shadow-md mb-2">Test</button>
+        </div>
+
+        <!-- Content Area -->
+        <main id="content-area">
+            <!-- Numbers Section -->
+            <section id="numbers-section">
+                <h2 class="text-3xl font-balsamiq text-center mb-6 text-blue-600">Numbers (1 to 50)</h2>
+                <div id="numbers-grid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-3 sm:gap-4"></div>
+            </section>
+
+            <!-- Alphabets Section (Hidden by default) -->
+            <section id="alphabets-section" class="hidden">
+                <div>
+                    <h2 class="text-3xl font-balsamiq text-center mb-6 text-green-600">Capital Letters (A-Z)</h2>
+                    <div id="capital-letters-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-13 gap-3 sm:gap-4"></div>
+                </div>
+                <div class="mt-12">
+                    <h2 class="text-3xl font-balsamiq text-center mb-6 text-yellow-600">Small Letters (a-z)</h2>
+                    <div id="small-letters-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-13 gap-3 sm:gap-4"></div>
+                </div>
+            </section>
+
+            <!-- Test Section (Hidden by default) -->
+            <section id="test-section" class="hidden">
+                <h2 class="text-3xl font-balsamiq text-center mb-6 text-purple-600">What is this?</h2>
+                <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg">
+                    <div id="question-card" class="card text-white text-6xl h-40 w-full mb-6 flex items-center justify-center"></div>
+                    <div id="answer-options" class="grid grid-cols-2 gap-4 mb-4"></div>
+                    <div id="feedback-area" class="feedback text-center mb-4"></div>
+                    <div class="flex justify-between items-center">
+                         <div class="text-xl font-bold">Score: <span id="score">0</span></div>
+                         <button id="next-question-btn" class="bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors">Next</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Element References ---
+            const numbersGrid = document.getElementById('numbers-grid');
+            const capitalLettersGrid = document.getElementById('capital-letters-grid');
+            const smallLettersGrid = document.getElementById('small-letters-grid');
+            const btnNumbers = document.getElementById('btn-numbers');
+            const btnAlphabets = document.getElementById('btn-alphabets');
+            const btnTest = document.getElementById('btn-test');
+            const numbersSection = document.getElementById('numbers-section');
+            const alphabetsSection = document.getElementById('alphabets-section');
+            const testSection = document.getElementById('test-section');
+            const questionCard = document.getElementById('question-card');
+            const answerOptions = document.getElementById('answer-options');
+            const feedbackArea = document.getElementById('feedback-area');
+            const scoreDisplay = document.getElementById('score');
+            const nextQuestionBtn = document.getElementById('next-question-btn');
+
+            // --- State Variables ---
+            const colors = ['card-blue', 'card-green', 'card-yellow', 'card-red', 'card-purple'];
+            let score = 0;
+            let correctAnswer = '';
+            const allNumbers = Array.from({ length: 50 }, (_, i) => i + 1);
+            const allCapitalLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+            const allSmallLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i));
+
+            // --- Initialization ---
+            generateLearnGrids();
+            setupEventListeners();
+            
+            // --- Functions ---
+
+            function generateLearnGrids() {
+                allNumbers.forEach(n => numbersGrid.appendChild(createCard(n, `Number ${n}`)));
+                allCapitalLetters.forEach(l => capitalLettersGrid.appendChild(createCard(l, `Letter ${l}`)));
+                allSmallLetters.forEach(l => smallLettersGrid.appendChild(createCard(l, `letter ${l}`)));
+            }
+            
+            function createCard(content, speakText) {
+                const card = document.createElement('div');
+                const colorClass = colors[Math.floor(Math.random() * colors.length)];
+                card.className = `card text-white text-3xl sm:text-4xl h-20 sm:h-24 ${colorClass}`;
+                card.textContent = content;
+                card.setAttribute('data-speak', speakText);
+                card.addEventListener('click', () => speak(speakText));
+                return card;
+            }
+
+            function speak(text, rate = 0.9) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US';
+                    utterance.rate = rate;
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    console.error("Sorry, your browser doesn't support text-to-speech.");
+                }
+            }
+
+            function setupEventListeners() {
+                btnNumbers.addEventListener('click', () => showSection('numbers'));
+                btnAlphabets.addEventListener('click', () => showSection('alphabets'));
+                btnTest.addEventListener('click', () => {
+                    showSection('test');
+                    startTest();
+                });
+                nextQuestionBtn.addEventListener('click', generateNewQuestion);
+            }
+
+            function showSection(sectionName) {
+                [btnNumbers, btnAlphabets, btnTest].forEach(btn => btn.classList.remove('active'));
+                [numbersSection, alphabetsSection, testSection].forEach(sec => sec.classList.add('hidden'));
+
+                if (sectionName === 'numbers') {
+                    btnNumbers.classList.add('active');
+                    numbersSection.classList.remove('hidden');
+                } else if (sectionName === 'alphabets') {
+                    btnAlphabets.classList.add('active');
+                    alphabetsSection.classList.remove('hidden');
+                } else if (sectionName === 'test') {
+                    btnTest.classList.add('active');
+                    testSection.classList.remove('hidden');
+                }
+            }
+
+            // --- Test Section Logic ---
+
+            function startTest() {
+                score = 0;
+                scoreDisplay.textContent = score;
+                generateNewQuestion();
+            }
+
+            function generateNewQuestion() {
+                feedbackArea.textContent = '';
+                feedbackArea.className = 'feedback text-center mb-4';
+                answerOptions.innerHTML = '';
+
+                const questionType = Math.floor(Math.random() * 3); // 0: number, 1: capital, 2: small
+                let options = [];
+                let sourceArray;
+
+                if (questionType === 0) { // Number
+                    sourceArray = allNumbers;
+                    correctAnswer = sourceArray[Math.floor(Math.random() * sourceArray.length)];
+                    options.push(correctAnswer);
+                    while (options.length < 4) {
+                        const wrongOption = sourceArray[Math.floor(Math.random() * sourceArray.length)];
+                        if (!options.includes(wrongOption)) {
+                            options.push(wrongOption);
+                        }
+                    }
+                } else { // Letter
+                    sourceArray = (questionType === 1) ? allCapitalLetters : allSmallLetters;
+                    correctAnswer = sourceArray[Math.floor(Math.random() * sourceArray.length)];
+                    options.push(correctAnswer);
+                     while (options.length < 4) {
+                        const wrongOption = sourceArray[Math.floor(Math.random() * sourceArray.length)];
+                        if (!options.includes(wrongOption)) {
+                            options.push(wrongOption);
+                        }
+                    }
+                }
+                
+                // Update question card
+                const colorClass = colors[Math.floor(Math.random() * colors.length)];
+                questionCard.className = `card text-white text-6xl h-40 w-full mb-6 flex items-center justify-center ${colorClass}`;
+                questionCard.textContent = correctAnswer;
+                speak(`What is this?`, 1);
+
+                // Create and shuffle answer buttons
+                shuffleArray(options).forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = 'answer-btn bg-white shadow-md font-bold text-2xl py-4 px-6 rounded-lg';
+                    button.addEventListener('click', () => checkAnswer(option, button));
+                    answerOptions.appendChild(button);
+                });
+            }
+
+            function checkAnswer(selectedAnswer, button) {
+                // Disable all buttons after an answer is selected
+                Array.from(answerOptions.children).forEach(btn => btn.disabled = true);
+
+                if (selectedAnswer === correctAnswer) {
+                    feedbackArea.textContent = 'Correct!';
+                    feedbackArea.classList.add('correct');
+                    score++;
+                    scoreDisplay.textContent = score;
+                    button.style.backgroundColor = '#22c55e'; // Green
+                    button.style.color = 'white';
+                    speak('Correct!', 1.2);
+                } else {
+                    feedbackArea.textContent = `Try Again! It's ${correctAnswer}`;
+                    feedbackArea.classList.add('wrong');
+                    button.style.backgroundColor = '#ef4444'; // Red
+                    button.style.color = 'white';
+                    speak(`No, that is ${selectedAnswer}. The correct answer is ${correctAnswer}.`, 1);
+                     // Highlight the correct answer
+                    Array.from(answerOptions.children).forEach(btn => {
+                        if (btn.textContent == correctAnswer) {
+                             btn.style.backgroundColor = '#22c55e';
+                             btn.style.color = 'white';
+                        }
+                    });
+                }
+            }
+            
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+        });
+    </script>
+
+</body>
+</html>
