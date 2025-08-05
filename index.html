@@ -154,9 +154,10 @@
             // --- Functions ---
 
             function generateLearnGrids() {
-                allNumbers.forEach(n => numbersGrid.appendChild(createCard(n, `Number ${n}`)));
-                allCapitalLetters.forEach(l => capitalLettersGrid.appendChild(createCard(l, `Letter ${l}`)));
-                allSmallLetters.forEach(l => smallLettersGrid.appendChild(createCard(l, `letter ${l}`)));
+                // Generate cards with simple text for speech
+                allNumbers.forEach(n => numbersGrid.appendChild(createCard(n, n)));
+                allCapitalLetters.forEach(l => capitalLettersGrid.appendChild(createCard(l, l)));
+                allSmallLetters.forEach(l => smallLettersGrid.appendChild(createCard(l, l)));
             }
             
             function createCard(content, speakText) {
@@ -164,8 +165,9 @@
                 const colorClass = colors[Math.floor(Math.random() * colors.length)];
                 card.className = `card text-white text-3xl sm:text-4xl h-20 sm:h-24 ${colorClass}`;
                 card.textContent = content;
-                card.setAttribute('data-speak', speakText);
-                card.addEventListener('click', () => speak(speakText));
+                // Convert number to string for the speech synthesis
+                card.setAttribute('data-speak', String(speakText));
+                card.addEventListener('click', () => speak(String(speakText)));
                 return card;
             }
 
@@ -266,7 +268,7 @@
                 // Disable all buttons after an answer is selected
                 Array.from(answerOptions.children).forEach(btn => btn.disabled = true);
 
-                if (selectedAnswer === correctAnswer) {
+                if (String(selectedAnswer) === String(correctAnswer)) {
                     feedbackArea.textContent = 'Correct!';
                     feedbackArea.classList.add('correct');
                     score++;
@@ -282,7 +284,7 @@
                     speak(`No, that is ${selectedAnswer}. The correct answer is ${correctAnswer}.`, 1);
                      // Highlight the correct answer
                     Array.from(answerOptions.children).forEach(btn => {
-                        if (btn.textContent == correctAnswer) {
+                        if (String(btn.textContent) === String(correctAnswer)) {
                              btn.style.backgroundColor = '#22c55e';
                              btn.style.color = 'white';
                         }
